@@ -11,7 +11,7 @@ class ResNet50(Network):
           num_classes: number of classes to predict (including background).
         '''
         (self.feed('data')
-             .conv(3, 3, 64, 2, 2, biased=False, relu=False, padding='SAME', name='conv1_1_3x3_s2')
+             .conv(7, 7, 64, 2, 2, biased=False, relu=False, padding='SAME', name='conv1_1_3x3_s2')
              .batch_normalization(relu=False, name='conv1_1_3x3_s2_bn')
              .relu(name='conv1_1_3x3_s2_bn_relu')
              .conv(3, 3, 64, 1, 1, biased=False, relu=False, padding='SAME', name='conv1_2_3x3')
@@ -226,8 +226,25 @@ class ResNet50(Network):
         (self.feed('conv5_2/relu',
                    'conv5_3_1x1_increase_bn')
              .add(name='conv5_3')
-             .relu(name='conv5_3/relu'))
+             .relu(name='conv5_3/relu')
+             .global_avg_pool(7,2,name='global_avg')
+             .fc(2048, name='fc'))
 
-        (self.feed('conv5_3/relu')
-             .conv(3, 3, 512, 1, 1, biased=False, relu=False, padding='SAME', name='conv5_4')
-             .batch_normalization(relu=True, name='conv5_4_bn'))
+
+
+
+class ResNet10(Network):
+     def setup(self, is_training, num_classes):
+          (self.feed('data')
+           .conv(7, 7, 64, 2, 2, biased=False, relu=False, padding='SAME', name='conv1_1_7x7_s2')
+           .batch_normalization(relu=False, name='conv1_1_3x3_s2_bn')
+           .relu(name='conv1_1_3x3_s2_bn_relu')
+           .max_pool(3, 3, 2, 2, padding='SAME', name='pool1_3x3_s2')
+           .conv(3, 3, 64, 1, 1, biased=False, relu=False, padding='SAME', name='conv1_2_3x3')
+           .conv(3, 3, 64, 1, 1, biased=False, relu=False, padding='SAME', name='conv1_3_3x3')
+           .conv(3, 3, 128, 1, 1, biased=False, relu=False, padding='SAME', name='conv1_4_3x3')
+           .conv(3, 3, 128, 1, 1, biased=False, relu=False, padding='SAME', name='conv1_5_3x3')
+           .global_avg_pool(7,2,name='global_avg')
+           .fc(128,name='fc')
+           )
+

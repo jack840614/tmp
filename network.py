@@ -202,9 +202,19 @@ class Network(object):
                               data_format=DEFAULT_DATAFORMAT)
         return output
 
+    # @layer
+    # def global_avg_pool(self, input ,name):
+    #     output = tf.reduce_mean(input, [1, 2], name=name, keepdims=True)
+    #     return output
     @layer
-    def global_avg_pool(self, input ,name):
-        output = tf.reduce_mean(input, [1, 2], name=name, keepdims=True)
+    def global_avg_pool(self, input, kernel_size, stride, name):
+        output = tf.nn.avg_pool(
+        input,
+        ksize=[1, kernel_size, kernel_size, 1],
+        strides=[1, stride, stride, 1],
+        padding="SAME",
+        name=name
+        )
         return output
     @layer
     def lrn(self, input, radius, alpha, beta, name, bias=1.0):
